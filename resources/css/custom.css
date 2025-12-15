@@ -1,0 +1,247 @@
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3VzdG9tLmNzcyIsInNvdXJjZXMiOlsiY3VzdG9tLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiJ9 */
+
+/*# sourceMappingURL=custom.css.map */
+
+.card .card-header {
+  background-color: #7a8b9a;
+  color: #ffffff;
+}
+
+.btn:not(.btn-social):not(.btn-social-icon):active,
+.btn:not(.btn-social):not(.btn-social-icon):focus,
+.btn:not(.btn-social):not(.btn-social-icon):hover,
+.btn {
+  background-color: #1f2935;
+  color: #ffffff;
+}
+
+.main-sidebar .sidebar-brand {
+  text-align: center;
+  padding-left: inherit;
+}
+
+.text-danger,
+.text-danger-all *,
+.text-danger-all *:before,
+.text-danger-all *:after {
+  color: #1a202e !important;
+}
+
+a.text-danger:focus,
+a.text-danger:hover {
+  color: #1a202e !important;
+}
+
+.mt-27 {
+  margin-top: 27px;
+}
+
+.text-danger {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545 !important;
+}
+
+.btn-danger,
+.btn-danger:hover,
+.btn-danger:active {
+  background-color: #c31111 !important;
+  color: #ffffff !important;
+}
+
+label span {
+  display: contents !important;
+}
+
+.theme-allports a {
+  color: #ffffff;
+}
+
+.theme-allports a:hover {
+  color: #ffffff;
+}
+
+table.dataTable tbody > tr.selected,
+table.dataTable tbody > tr > .selected {
+  background-color: #d6dbe0;
+}
+
+tbody tr td a {
+  color: #15f4ef !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active,
+.btn-success.disabled:hover,
+.btn-success.disabled:focus,
+.btn-success.disabled:active {
+  background-color: #15f4ef !important;
+  color: #fff !important;
+}
+
+.btn {
+  color: #fff !important;
+}
+
+.card-body h4 {
+  color: #486b8a;
+}
+
+.card .card-body .section-title {
+  margin: 0px 0 10px 0;
+  font-size: 16px;
+}
+
+.pretty input:checked ~ .state.p-primary-o label:before,
+.pretty.p-toggle .state.p-primary-o label:before,
+.pretty input:checked ~ .state.p-success-o label:before,
+.pretty.p-toggle .state.p-success-o label:before {
+  border-color: #15f4ef;
+}
+
+.pretty.p-default:not(.p-fill) input:checked ~ .state.p-primary-o label:after,
+.pretty.p-default:not(.p-fill) input:checked ~ .state.p-success-o label:after {
+  background-color: #15f4ef !important;
+}
+
+.card-header h4 {
+  color: #ffffff;
+}
+
+.btn-success,
+.btn-success.disabled {
+  box-shadow: 0 2px 6px #ffffff;
+  background-color: #15f4ef;
+  border-color: #cbd3dc;
+  color: #fff;
+}
+
+.swal-title {
+  font-size: 20px;
+}
+
+.swal-text {
+  text-align: left;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.card.card-auth .card-header-auth {
+  background: linear-gradient(180deg, #21c5c1 0%, #15f4ef 100%) !important;
+}
+
+.btn-auth-color {
+  background: linear-gradient(180deg, #21c5c1 0%, #15f4ef 100%) !important;
+}
+
+.theme-allports .btn-primary {
+  background-color: #1074e1;
+  color: #ffffff !important;
+}
+
+.theme-allports .btn-primary:hover {
+  color: #ffffff !important;
+}
+
+#material_image_div {
+  text-align: center;
+}
+
+#top_cover_image_div {
+  text-align: center;
+}
+
+#mat_image {
+  width: 85%;
+  height: auto;
+}
+
+#top_cover_image {
+  width: 85%;
+  height: auto;
+}
+
+.mat_image_description {
+  font-size: 14px;
+  margin: 8px 0px;
+  font-weight: 100;
+}
+.barossa-sidebar .main-sidebar .sidebar-brand {
+  background: white !important;
+}
+#app > div > nav {
+  background-color: white;
+}
+#app > div > div.main-sidebar.sidebar-style-2 {
+  background: #1074e1;
+}
+.btn-success {
+  background-color: #1074e1;
+}
+
+.barossa-sidebar .main-sidebar .sidebar-menu li ul.dropdown-menu li a {
+  color: #fff;
+}
+.barossa-sidebar .main-sidebar .sidebar-menu li ul.dropdown-menu li a:hover {
+  color: #a9b7d0;
+}
+.theme-allports .page-item.active .page-link {
+  color: #fff;
+  background-color: #1074e1;
+  border-color: #1074e1;
+}
+.theme-allports .page-item.disabled .page-link {
+  color: #1074e1;
+}
+.theme-allports .page-item .page-link {
+  color: #1074e1;
+}
+.card .card-header {
+  background-color: #1074e1;
+  color: #ffffff;
+}
+.card.card-auth .card-header-auth {
+  background: #1074e1 !important;
+}
+.btn-auth-color {
+  background: #1074e1 !important;
+}
+
+.logo-name {
+  color: #026cdf;
+  font-size: 16px !important;
+  letter-spacing: normal;
+}
+
+.theme-allports .swal-button.swal-button--confirm {
+  background-color: #1074e1 !important;
+}
+.swal-title {
+  color: black !important;
+}
+.swal-text {
+  color: black !important;
+}
+.transaction-timer,
+.transaction-show {
+  width: 30%;
+  margin: auto;
+  padding: 50px;
+  text-align: center;
+  background: white;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.025);
+}
+
+.transaction-show {
+  width: 50%;
+  margin-top: 30px;
+  padding-bottom: 20px;
+}
+.card .card-header .btn {
+  margin-top: 1px;
+  padding: 2px 6px;
+  border-radius: 50px !important;
+}
