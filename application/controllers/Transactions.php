@@ -49,16 +49,16 @@ class Transactions extends MY_Controller
                     $data['user'] = $id[0]['id'];
                     $this->transactions_model->add_transaction($data);
                     echo json_encode(array('status' => 'success', 'message' => 'Transaction added successfully'));
-                    return;
+                    exit;
                     // $data['success_response'] = 'transaction added successfully';
                 } else {
                     echo json_encode(array('status' => 'error', 'message' => 'User email not found'));
-                    return;
+                    exit;
                     // $data['error_response'] = 'User email not found';
                 }
             } else {
                 echo json_encode(['status' => 'error', 'message' => strip_tags(validation_errors())]);
-                return;
+                exit;
                 // $data['error_response'] = validation_errors();
             }
         }
@@ -94,7 +94,7 @@ class Transactions extends MY_Controller
                         'message' => 'This order was already bought, are you sure you want to proceed?',
                         'order_id' => $order_id
                     ));
-                    return;
+                    exit;
                 }
             }
         }
@@ -105,7 +105,7 @@ class Transactions extends MY_Controller
         } else {
             echo 'false';
         }
-        return;
+        exit;
     }
 
 

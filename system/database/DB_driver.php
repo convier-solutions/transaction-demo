@@ -354,6 +354,16 @@ abstract class CI_DB_driver {
 	 */
 	protected $_count_string = 'SELECT COUNT(*) AS ';
 
+	/**
+	 * Failover database connections
+	 *
+	 * Added for PHP 8.2 compatibility to prevent
+	 * "Creation of dynamic property CI_DB_mysqli_driver::$failover is deprecated" warning
+	 *
+	 * @var array
+	 */
+	public $failover = [];
+
 	// --------------------------------------------------------------------
 
 	/**

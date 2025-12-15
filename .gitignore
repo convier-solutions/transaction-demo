@@ -1,0 +1,55 @@
+# ===============================
+# CodeIgniter 3 .gitignore
+# ===============================
+
+# System folder (if not modified)
+system/
+
+# Vendor (Composer)
+vendor/
+
+# Node modules (if used)
+node_modules/
+
+# Environment / config
+.env
+.env.*
+application/config/database.php
+application/config/config.php
+
+# Logs
+application/logs/*
+!application/logs/index.html
+
+# Cache
+application/cache/*
+!application/cache/index.html
+
+# Sessions (if file-based)
+application/sessions/*
+!application/sessions/index.html
+
+# Uploads (optional – ignore user uploads)
+uploads/
+assets/uploads/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup & temp files
+*.bak
+*.tmp
+*.log
+
+# PHPUnit
+.phpunit.result.cache
+
+# Composer lock (ignore only if you want)
+# composer.lock

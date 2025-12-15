@@ -92,6 +92,15 @@ class CI_URI {
 	protected $_permitted_uri_chars;
 
 	/**
+	 * Config Class
+	 *
+	 * "Creation of dynamic property CI_URI::$config is deprecated" warning
+	 *
+	 * @var CI_Config
+	 */
+	protected $config;
+
+	/**
 	 * Class constructor
 	 *
 	 * @return	void

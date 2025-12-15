@@ -124,6 +124,139 @@ class CI_Loader {
 		'user_agent' => 'agent'
 	);
 
+		/**
+	 * Benchmark Class
+	 *
+	 * @var CI_Benchmark
+	 */
+	protected $benchmark;
+
+	/**
+	 * Hooks Class
+	 *
+	 * @var CI_Hooks
+	 */
+	protected $hooks;
+
+	/**
+	 * Config Class
+	 *
+	 * @var CI_Config
+	 */
+	protected $config;
+
+	/**
+	 * Log Class
+	 *
+	 * @var CI_Log
+	 */
+	protected $log;
+
+	/**
+	 * UTF-8 Class
+	 *
+	 * @var CI_Utf8
+	 */
+	protected $utf8;
+
+	/**
+	 * URI Class
+	 *
+	 * @var CI_URI
+	 */
+	protected $uri;
+
+	/**
+	 * Router Class
+	 *
+	 * @var CI_Router
+	 */
+	protected $router;
+
+	/**
+	 * Output Class
+	 *
+	 * @var CI_Output
+	 */
+	protected $output;
+
+	/**
+	 * Security Class
+	 *
+	 * @var CI_Security
+	 */
+	protected $security;
+
+	/**
+	 * Input Class
+	 *
+	 * @var CI_Input
+	 */
+	protected $input;
+
+	/**
+	 * Language Class
+	 *
+	 * @var CI_Lang
+	 */
+	protected $lang;
+
+	/**
+	 * Loader Class
+	 *
+	 * @var CI_Loader
+	 */
+	protected $load;
+
+	/**
+	 * Database Driver
+	 *
+	 * @var CI_DB_driver
+	 */
+	protected $db;
+
+	/**
+	 * Pagination Library
+	 *
+	 * @var CI_Pagination
+	 */
+	protected $pagination;
+
+	/**
+	 * Authentication Model
+	 *
+	 * @var Authentication_model
+	 */
+	protected $authentication_model;
+
+	/**
+	 * User Model
+	 *
+	 * @var User_model
+	 */
+	protected $user_model;
+
+	/**
+	 * Transactions Model
+	 *
+	 * @var Transactions_model
+	 */
+	protected $transactions_model;
+
+	/**
+	 * Form Validation Library
+	 *
+	 * @var CI_Form_validation
+	 */
+	protected $form_validation;
+
+	/**
+	 * Charts Model
+	 *
+	 * @var Charts_model
+	 */
+	protected $charts_model;
+
 	// --------------------------------------------------------------------
 
 	/**
