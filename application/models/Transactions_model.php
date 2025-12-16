@@ -129,7 +129,7 @@ class Transactions_model extends CI_Model
             user_transactions ut
             
         WHERE 
-            ut.user NOT IN (
+            ut.id NOT IN (
                 select user from latest_user
             )  
 
