@@ -1,6 +1,17 @@
 <style>
-    .refresh-bg {
+    #refreshUser:hover{
+         background-color: #bfc6cd !important;
+
+    }
+    #refreshUser.refresh-bg {
         background-color: #1f2935 !important;
+    }
+     #refreshUser.refresh-bg:active {
+        background-color: #086aebff !important;
+    }
+
+     #refreshUser.refresh-bg:hover {
+        background-color: #bfc6cd !important;
     }
 
 </style>
@@ -86,7 +97,7 @@
                 </table>
                 <div class="mb-3 d-flex justify-content-around">
                     <a class="btn btn-primary" href="javascript:void(0)" onclick="goToAddTransactionPage('<?= site_url('add_transaction') ?>')">add transaction</a>
-                    <a class="btn btn-secondary" style="display: none;" id="refreshUser" href="javascript:void(0)" onclick="refreshUserData()">Refresh User</a>
+                    <a class="btn btn-secondary" style="display: none;" id="refreshUser" href="javascript:void(0)">Refresh User</a>
                 </div>
             </div>
         </div>
@@ -95,6 +106,13 @@
 </div>
 
 <script>
+    $(document).ready(function() {
+
+    $("#refreshUser").on("click", function() {
+        refreshUserData();
+    });
+
+});
     var interval = '';
     let lastUserIds = [];
     $('.buy_transaction').click(timer_data_show);

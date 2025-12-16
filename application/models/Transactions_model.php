@@ -27,7 +27,7 @@ class Transactions_model extends CI_Model
         $this->db->select('t.id, t.order_id, t.purchase_id, t.amount, t.pay_out, u.email, t.transaction_date');
         $this->db->from('transactions t');
         $this->db->join('users u', 'u.id = t.user', 'left');
-        $this->db->order_by('t.id', 'ASC');
+        $this->db->order_by('t.id', 'DESC');
         $this->db->limit($limit, $offset);
 
         $query = $this->db->get();
