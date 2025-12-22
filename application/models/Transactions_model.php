@@ -246,4 +246,18 @@ class Transactions_model extends CI_Model
 
         return implode('', $links);
     }
+
+    function get_order_exists($order_id)
+    {
+        $this->db->select('*');
+        $this->db->from('transactions');
+        $this->db->where('order_id', $order_id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row();
+        } else {
+            return false;
+        }
+    }
 }

@@ -79,6 +79,16 @@ class Transactions extends MY_Controller
         $order_id = $this->input->post('orderID');
         $lastUserIDs = $this->input->post('last_user_ids') ?? [];
 
+        $order_exists = $this->transactions_model->get_order_exists($order_id);
+        
+        if ($order_exists) {
+            echo json_encode(array(
+                'status' => 'error',
+                'message' => 'This order was already bought.'
+            ));
+            exit;
+        }
+        
 
         // Validate if order_id already exists in transactions
         if (!empty($order_id)) {

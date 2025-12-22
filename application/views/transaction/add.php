@@ -54,14 +54,14 @@
                         <label for="order_id" class="col-md-4 control-label"><span class="text-danger">*</span>Order
                             id</label>
                         <div class="col-md-8">
-                            <input type="text" name="order_id" class="form-control" id="order_id" required />
+                            <input type="text" name="order_id" class="form-control" id="order_id" value="<?= set_value('order_id'); ?>" required />
                             <span class="text-danger"><?php echo form_error('order_id'); ?> </span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="purchase_id" class="col-md-4 control-label"><span class="text-danger">*</span>Purchase id</label>
                         <div class="col-md-8">
-                            <input type="text" name="purchase_id" class="form-control" id="purchase_id" required />
+                            <input type="text" name="purchase_id" class="form-control" id="purchase_id" value="<?= set_value('purchase_id'); ?>" required />
                             <span class="text-danger"><?php echo form_error('purchase_id'); ?></span>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                         <label for="total_cost" class="col-md-4 control-label"><span class="text-danger">*</span>Total
                             Cost</label>
                         <div class="col-md-8">
-                            <input type="text" name="total_cost" class="form-control" id="total_cost" required />
+                            <input type="text" name="total_cost" class="form-control" id="total_cost" value="<?= set_value('total_cost'); ?>" required />
                             <span class="text-danger"><?php echo form_error('total_cost'); ?></span>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                     <div class="form-group">
                         <label for="pay_out" class="col-md-4 control-label"><span class="text-danger">*</span>Payout</label>
                         <div class="col-md-8">
-                            <input type="text" name="pay_out" class="form-control" id="pay_out" required />
+                            <input type="text" name="pay_out" class="form-control" id="pay_out" value="<?= set_value('pay_out'); ?>" required />
                             <span class="text-danger"><?php echo form_error('pay_out'); ?></span>
                         </div>
                     </div>
@@ -87,14 +87,14 @@
                         <label for="user" class="col-md-4 control-label"><span class="text-danger">*</span>User
                             email</label>
                         <div class="col-md-8">
-                            <input type="email" name="user" class="form-control" id="user" required />
+                            <input type="email" name="user" class="form-control" id="user" value="<?= set_value('user'); ?>" required />
                             <span class="text-danger"><?php echo form_error('user'); ?></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="transaction_date" class="col-md-4 control-label"><span class="text-danger">*</span>Transaction date</label>
                         <div class="col-md-8">
-                            <input type="date" name="transaction_date" class="form-control" id="transaction_date" required />
+                            <input type="date" name="transaction_date" class="form-control" id="transaction_date" value="<?= set_value('transaction_date'); ?>" required />
                             <span class="text-danger"><?php echo form_error('transaction_date'); ?></span>
                         </div>
                     </div>
@@ -124,11 +124,10 @@
 
 <script>
     $(document).ready(function() {
-        let orderId = sessionStorage.getItem('orderId');
-        let user = sessionStorage.getItem('userInfo');
-        user = JSON.parse(user);
-        if (user) {
-            $('#user').val(user[0]['email']);
+        let orderId = localStorage.getItem('orderId');
+        let userInfo = localStorage.getItem('userInfo');
+        if (orderId) {
+            $('#user').val(userInfo ? userInfo : null);
             $('#order_id').val(orderId);
 
             // sessionStorage.removeItem('orderId');
@@ -139,78 +138,29 @@
     });
     $("#addTransaction").submit(function(e) {
         e.preventDefault();
+
+        let form = this;
         let downloadTransactions = "<?= site_url('download_transaction') ?>";
+
         $.ajax({
             url: "<?= site_url('add_transaction') ?>",
             type: "POST",
-            data: $(this).serialize(),
-            data_type: "json",
+            data: $(form).serialize(),
+            dataType: "json",
             success: function(response) {
-                response = JSON.parse(response);
-                if (response.status == 'error') {
+
+                if (response.status === 'error') {
                     swal("Error", response.message, "error");
                     return;
                 }
-                swal({
-                    title: "Transaction added successfully!",
-                    text: "Do you want to reuse the same email?",
-                    icon: "success",
-                    buttons: {
-                        cancel: {
-                            text: "No",
-                            visible: true,
-                            className: "",
-                            closeModal: true,
-                        },
-                        confirm: {
-                            text: "Yes",
-                            className: "",
-                            closeModal: true
-                        }
-                    }
-                }).then((willReuse) => {
-                    if (willReuse) {
-                        sessionStorage.removeItem('orderId');
-                        window.location.reload();
-                        let orderID = $('#order_id').val();
-                        // $.ajax({
-                        //     url: "<?= site_url('download_transaction_file') ?>",
-                        //     type: "POST",
-                        //     data: {
-                        //         orderID,
-                        //     },
-                        //     success: function(response) {
-                        //         console.log(response);
-                        //         dataObj = {};
-                        //         if (response != 'false') {
-                        //             dataObj = JSON.parse(response);
-                        //         }
-                        //         if (dataObj.message != undefined) {
-                        //             swal({
-                        //                 title: "Are you sure?",
-                        //                 text: dataObj.message,
-                        //                 icon: "warning",
-                        //                 buttons: true,
-                        //                 dangerMode: true,
-                        //             }).then((willProceed) => {
-                        //                 if (willProceed) {
-                        //                     $("#addTransaction").submit();
-                        //                 } else {
-                        //                     // window.location.href = downloadTransactions;
-                        //                 }
-                        //                 return;
-                        //             });
-                        //         } else {
-                        //             $("#addTransaction").submit();
-                        //         }
-                        //     }
-                        // });
-                    } else {
-                        // User pressed NO → reload or go back
-                        window.location.href = downloadTransactions;
-                    }
-                });
-            }
+
+                localStorage.removeItem('orderId');
+                localStorage.setItem('transactionAdded', 'true');
+                localStorage.setItem('isCdTransaction', 'false');
+                localStorage.removeItem('card_type');
+                window.location.href = downloadTransactions;
+
+            },
         });
     });
 </script>

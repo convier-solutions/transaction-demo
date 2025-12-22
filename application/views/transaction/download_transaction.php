@@ -54,7 +54,6 @@
                         <select id="card_type" type="text" name="card_type" class="form-control" required>
                             <option value="0">Select Card Type</option>
                             <option value="LIMIT">LIMIT</option>
-                            <option value="BOFA">BOFA</option>
                             <option value="CD">CD</option>
                         </select>
                         <span class="text-danger"><?php echo form_error('card_type'); ?></span>
@@ -81,23 +80,17 @@
                     <thead>
                         <tr>
                             <th class="text-left w-50">Email</th>
-                            <th class="text-left w-50">Password</th>
-                            <th class="text-left w-50">CVV</th>
-                            <th class="text-left w-50">Card Type</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-left w-50"></td>
-                            <td class="text-left w-50"></td>
-                            <td class="text-left w-50"></td>
                             <td class="text-left w-50"></td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="mb-3 d-flex justify-content-around">
                     <a class="btn btn-primary" href="javascript:void(0)" onclick="goToAddTransactionPage('<?= site_url('add_transaction') ?>')">add transaction</a>
-                    <a class="btn btn-secondary" style="display: none;" id="refreshUser" href="javascript:void(0)">Refresh User</a>
+                    <a class="btn btn-secondary" style="display: none;" id="refreshUser" href="javascript:void(0)" onclick="refreshUserData()">Refresh User</a>
                 </div>
             </div>
         </div>
@@ -106,116 +99,163 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    var interval = '';
+    let userInfo = '';
+    let lastUserIds = [];
+    let cardType = $('#card_type').val();
+    let orderId = $('#order_id').val();
+    let addTransactions = "<?= site_url('add_transaction') ?>";
+    let normalUser = "<?= site_url('normal_user') ?>";
+    let downloadTransactionFile = "<?= site_url('download_transaction_file') ?>";
 
-    $("#refreshUser").on("click", function() {
-        refreshUserData();
+    $(document).on('click', '.buy_transaction', function(e) {
+        e.preventDefault();
+        let orderId = $('#order_id').val();
+
+        if (!orderId) {
+            swal("Info", "Please enter order id first", "info");
+            return;
+        }
+
+        checkOrder(function(isValid) {
+            if (isValid) {
+                handlePostTransactionFlow();
+            }
+        });
     });
 
-});
-    var interval = '';
-    let lastUserIds = [];
-    $('.buy_transaction').click(timer_data_show);
+    function handlePostTransactionFlow() {
+        let cardType = $('#card_type').val();
+        let orderId = $('#order_id').val();
 
-    let userInfo = '';
+
+        if (cardType.toUpperCase() === 'LIMIT') {
+            localStorage.setItem('card_type', 'LIMIT');
+            localStorage.setItem('orderId', orderId);
+            window.location.href = normalUser;
+            return; 
+        }
+
+        if (cardType.toUpperCase() == 'CD') {
+
+           let isTransactionAdded = localStorage.getItem('transactionAdded');
+           let isCdTransaction = localStorage.getItem('isCdTransaction');
+           if (isTransactionAdded !== 'true' && isCdTransaction !== 'true') {
+               timerDataShow();
+               localStorage.setItem('isCdTransaction', 'true');
+                return;
+            }
+
+            swal({
+                title: "Do you want to reuse the same email?",
+                icon: "success",
+                buttons: {
+                    cancel: {
+                        text: "No",
+                        visible: true,
+                        closeModal: true
+                    },
+                    confirm: {
+                        text: "Yes",
+                        closeModal: true
+                    }
+                }
+            }).then((willReuse) => {
+
+                if (willReuse) {
+                    localStorage.setItem('orderId', orderId);
+                    window.location.href = addTransactions;
+
+                } else {
+                    timerDataShow();
+                }
+
+            });
+        } 
+
+    }
 
     function goToAddTransactionPage(path) {
-        let orderId = $('#order_id').val();
-        sessionStorage.setItem('userInfo', userInfo);
-        sessionStorage.setItem('orderId', orderId);
         window.location = path;
     }
 
-    function timer_data_show() {
+    function timerDataShow() {
+        let orderId = $('#order_id').val();
+        let cardType = $('#card_type').val();
 
-        if ($('#order_id').val().length == 0) {
-            sweetAlert(
-                'Please enter order id',
-                'You must have to enter order id first to buy these transactions',
-                'info'
-            );
-            return false;
-        } else {
-            $('.buy_transaction').attr('disabled', true).css('pointer-events', 'none');
-            let cardType = $('#card_type').val();
-            let orderID = $('#order_id').val();
-            $.ajax({
-                url: "<?= site_url('download_transaction_file') ?>",
-                data: {
-                    cardType,
-                    orderID
-                },
-                method: "post",
-                success: function(data) {
-                    console.log(data,"ajax response");
-                    dataObj={};
-                    if(data != 'false'){
-                        dataObj = JSON.parse(data);
-                    }
-                    if (dataObj.message != undefined) {
-                        // Show confirmation dialog
-                        swal({
-                                title: "Are you sure?",
-                                text: dataObj.message,
-                                icon: "warning",
-                                buttons: true,
-                                dangerMode: true,
-                            })
-                            .then((willProceed) => {
-                                if (willProceed) {
-                                    // User confirmed, proceed with the request
-                                    $.ajax({
-                                        url: "<?= site_url('download_transaction_file') ?>",
-                                        data: {
-                                            cardType,
-                                            orderID,
-                                            force_proceed: 'yes'
-                                        },
-                                        method: "post",
-                                        success: function(data) {
-                                            processResponseData(data, cardType);
-                                        }
-                                    });
-                                } else {
-                                    if (data != 'false') {
-                                        processResponseData(data, cardType);
-                                    }
-                                }
-                            });
-                        return;
-
-                    }else{
-                        processResponseData(data, cardType);
-                    }
-
-
+        $.ajax({
+            url: downloadTransactionFile,
+            method: "POST",
+            data: {
+                cardType: cardType,
+                orderID: orderId
+            },
+            method: "post",
+            success: function(data) {
+                const res = JSON.parse(data);
+                if (res.status !== 'error') {
+                    localStorage.setItem('userInfo', res[0].email);
+                    localStorage.setItem('orderId', orderId);
+                    handleDownloadResponse(res)
                 }
+
+            }
+        })
+    }
+
+    function handleDownloadResponse(data) {
+        if (data.message != undefined) {
+            swal({
+                title: "Are you sure?",
+                text: data.message,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then(confirm => {
+                confirm
+                    ?
+                    forceProceed() :
+                    processResponseData(data, cardType);
             });
+        } else {
+            processResponseData(data, cardType);
         }
     }
 
+    function forceProceed() {
+        let cardType = $('#card_type').val();
+        $.ajax({
+            url: "<?= site_url('download_transaction_file') ?>",
+            data: {
+                cardType,
+                orderID,
+                force_proceed: 'yes'
+            },
+            method: "post",
+            success: function(data) {
+                let res = JSON.parse(data);
+                processResponseData(res, cardType);
+            }
+        });
+    }
+
     function processResponseData(data, cardType) {
-        if (data != 'false') {
+        if (data.status != 'error') {
 
-            let user = JSON.parse(data);
-            console.log(user,"user data");
-            lastUserIds.push(user[0]['id']??'');
-            let cvv = user[0]['cvv'] == '' ? 'not found' : user[0]['cvv'];
-            let cardType = user[0]['card_type'] == null ? 'not found' : user[0]['card_type'];
+            lastUserIds.push(data[0]['id'] ?? '');
+            let cvv = data[0]['cvv'] == '' ? 'not found' : data[0]['cvv'];
+            let cardType = data[0]['card_type'] == null ? 'not found' : data[0]['card_type'];
 
-            $('.transaction-show table tr>td:nth-child(1)').html(user[0]['email']);
+            $('.transaction-show table tr>td:nth-child(1)').html(data[0]['email']);
             $('#transaction-table-show').show();
             $('#transaction-table-show .transaction-show').show();
-            if(cardType.toUpperCase() == 'CD'){
+            if (cardType.toUpperCase() == 'CD') {
                 $(".transaction-timer").hide();
                 $("#refreshUser").show();
-            }else{
-                $('.transaction-show table tr>td:nth-child(2)').html(user[0]['password']);
-                $('.transaction-show table tr>td:nth-child(3)').html(cvv);
-                $('.transaction-show table tr>td:nth-child(4)').html(cardType);
+            } else {
                 $("#refreshUser").hide();
             }
-            sessionStorage.setItem('cardType', cardType.toUpperCase()??'');
+            sessionStorage.setItem('cardType', cardType.toUpperCase() ?? '');
             interval = setInterval(updateCountdown, 1000);
             userInfo = data;
         } else {
@@ -233,7 +273,7 @@
                     'info'
                 );
             }
-            $("#refreshUser").hide();   
+            $("#refreshUser").hide();
         }
     }
 
@@ -258,7 +298,10 @@
             },
             method: "post",
             success: function(data) {
-                processResponseData(data, cardType);
+                let res = JSON.parse(data);
+
+                localStorage.setItem('userInfo', res[0].email);
+                processResponseData(res, cardType);
                 $("#refreshUser").addClass("refresh-bg");
             }
         });
@@ -285,5 +328,33 @@
                 '<button class="btn btn-primary buy_transaction" onclick="timer_data_show()">Try again</button>')
         }
 
+    }
+
+    function checkOrder(callback) {
+        let cardType = $('#card_type').val();
+        let orderID = $('#order_id').val();
+
+
+        $.ajax({
+            url: "<?= site_url('download_transaction_file') ?>",
+            method: "POST",
+            data: {
+                cardType,
+                orderID
+            },
+            success: function(data) {
+                let dataObj = {};
+                dataObj = JSON.parse(data);
+                console.log(dataObj);
+                
+
+                if (dataObj.status === 'error') {
+                    swal("Error", dataObj.message, "error");
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            }
+        });
     }
 </script>
