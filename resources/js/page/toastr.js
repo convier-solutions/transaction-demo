@@ -1,5 +1,33 @@
 "use strict";
 
+function toaster_message(type, message) {
+  
+  if (type === "success") {
+    iziToast.success({
+      title: "Success",
+      message: message,
+      position: "topRight",
+    });
+  } else if (type === "error") {
+    iziToast.error({
+      title: "Error",
+      message: message,
+      position: "topRight",
+    });
+  } else if (type === "info") {
+    iziToast.info({
+      title: "Info",
+      message: message,
+      position: "topRight",
+    });
+  } else if (type === "warning") {
+    iziToast.warning({
+      title: "Warning",
+      message: message,
+      position: "topRight",
+    });
+  }
+}
 $("#toastr-1").click(function() {
   iziToast.info({
     title: 'Hello, world!',

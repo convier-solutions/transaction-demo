@@ -117,20 +117,23 @@
             return;
         }
 
-        checkOrder(function(isValid) {
+        checkOrder(function(isValid , data) {
             if (isValid) {
-                handlePostTransactionFlow();
+                handlePostTransactionFlow(data);
             }
         });
     });
 
-    function handlePostTransactionFlow() {
+    function handlePostTransactionFlow(data) {
         let cardType = $('#card_type').val();
         let orderId = $('#order_id').val();
+        let jsondata = JSON.parse(data);
+        let userInfo = jsondata[0].email;
 
 
         if (cardType.toUpperCase() === 'LIMIT') {
             localStorage.setItem('card_type', 'LIMIT');
+            localStorage.setItem('limitTransactionDone', 'true');
             localStorage.setItem('orderId', orderId);
             window.location.href = normalUser;
             return; 
@@ -138,11 +141,12 @@
 
         if (cardType.toUpperCase() == 'CD') {
 
-           let isTransactionAdded = localStorage.getItem('transactionAdded');
-           let isCdTransaction = localStorage.getItem('isCdTransaction');
-           if (isTransactionAdded !== 'true' && isCdTransaction !== 'true') {
+           let cdTransactionDone = localStorage.getItem('cdTransactionDone');
+
+           if (cdTransactionDone !== 'true') {
+                localStorage.setItem('card_type', 'CD');
+                localStorage.setItem('cdTransactionDone', 'true');
                timerDataShow();
-               localStorage.setItem('isCdTransaction', 'true');
                 return;
             }
 
@@ -164,9 +168,18 @@
 
                 if (willReuse) {
                     localStorage.setItem('orderId', orderId);
+                    let oldUserInfo = localStorage.getItem('oldUserInfo');
+                    let UserInfo = localStorage.getItem('userInfo');
+                    if (oldUserInfo) {
+                        userInfo = oldUserInfo;
+                    } else {
+                        userInfo = UserInfo;
+                    }
+                    localStorage.setItem('userInfo', userInfo);
                     window.location.href = addTransactions;
 
                 } else {
+                    localStorage.setItem('userInfo', userInfo);
                     timerDataShow();
                 }
 
@@ -195,6 +208,7 @@
                 const res = JSON.parse(data);
                 if (res.status !== 'error') {
                     localStorage.setItem('userInfo', res[0].email);
+                    localStorage.setItem('oldUserInfo', res[0].email);
                     localStorage.setItem('orderId', orderId);
                     handleDownloadResponse(res)
                 }
@@ -301,6 +315,7 @@
                 let res = JSON.parse(data);
 
                 localStorage.setItem('userInfo', res[0].email);
+                localStorage.setItem('oldUserInfo', res[0].email);
                 processResponseData(res, cardType);
                 $("#refreshUser").addClass("refresh-bg");
             }
@@ -344,15 +359,13 @@
             },
             success: function(data) {
                 let dataObj = {};
-                dataObj = JSON.parse(data);
-                console.log(dataObj);
-                
+                dataObj = JSON.parse(data);                
 
                 if (dataObj.status === 'error') {
                     swal("Error", dataObj.message, "error");
                     callback(false);
                 } else {
-                    callback(true);
+                    callback(true, data);
                 }
             }
         });

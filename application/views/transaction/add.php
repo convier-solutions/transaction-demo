@@ -126,8 +126,10 @@
     $(document).ready(function() {
         let orderId = localStorage.getItem('orderId');
         let userInfo = localStorage.getItem('userInfo');
-        if (orderId) {
-            $('#user').val(userInfo ? userInfo : null);
+        let oldUserInfo = localStorage.getItem('oldUserInfo');
+        
+        if ( orderId || userInfo ) {
+            $('#user').val(userInfo ? userInfo : oldUserInfo);
             $('#order_id').val(orderId);
 
             // sessionStorage.removeItem('orderId');
@@ -141,6 +143,7 @@
 
         let form = this;
         let downloadTransactions = "<?= site_url('download_transaction') ?>";
+        let oldUserInfo = $('#user').val();
 
         $.ajax({
             url: "<?= site_url('add_transaction') ?>",

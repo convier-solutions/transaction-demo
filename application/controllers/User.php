@@ -112,6 +112,7 @@ class User extends MY_Controller
             $this->form_validation->set_rules('card_type', 'card_type', 'required');
 
             if ($this->form_validation->run()) {
+                $redirect_to = $this->input->post('redirect_to');
                 $params = array(
                     'email' => $this->input->post('email'),
                     'password' => $this->input->post('password'),
@@ -125,8 +126,14 @@ class User extends MY_Controller
 
                 if ($result == true) {
                     $data['success_response'] = 'User added successfully';
+                    flash_message('success', 'User added successfully');
+                    if (!empty($redirect_to) && $redirect_to == 'LIMIT') {
+                        redirect(site_url('add_transaction'));
+                    }
+                    redirect(site_url('normal_user'));
                 } else {
                     $data['error_response'] = 'Failed to add User';
+                    flash_message('error', 'Failed to add User');
                 }
             }
         }

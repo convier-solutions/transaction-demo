@@ -49,6 +49,7 @@ class Transactions extends MY_Controller
                     $data['user'] = $id[0]['id'];
                     $this->transactions_model->add_transaction($data);
                     echo json_encode(array('status' => 'success', 'message' => 'Transaction added successfully'));
+                    flash_message('success', 'Transaction added successfully');
                     exit;
                     // $data['success_response'] = 'transaction added successfully';
                 } else {

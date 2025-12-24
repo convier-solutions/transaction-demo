@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="<?php echo site_url('resources/bundles/jquery-selectric/selectric.css');?>">
 <link rel="stylesheet" href="<?php echo site_url('resources/bundles/bootstrap-timepicker/css/bootstrap-timepicker.min.css');?>">
 <link rel="stylesheet" href="<?php echo site_url('resources/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');?>">
+<link rel="stylesheet" href="<?php echo site_url('resources/bundles/izitoast/css/iziToast.min.css');?>">
 <!-- Template CSS -->
 <link rel="stylesheet" href="<?php echo site_url('resources/css/style.css');?>">
 <link rel="stylesheet" href="<?php echo site_url('resources/css/developer.css');?>">

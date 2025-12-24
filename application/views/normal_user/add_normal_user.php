@@ -22,21 +22,9 @@
 
         <div class="card-body">
 
-            <?php echo form_open('normal_user', array("class" => "form-horizontal")); ?>
+            <?php echo form_open('normal_user', array("class" => "form-horizontal",  "id" => "normalUserForm")); ?>
 
-            <?php
-            if (isset($success_response)) {
-            ?>
-                <div class="alert alert-success alert-dismissible show fade">
-                    <div class="alert-body">
-                        <button class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <?= $success_response ?>
-                    </div>
-                </div>
-            <?php
-            } else if (isset($error_response)) {
+            <?php if (isset($error_response)) {
             ?>
                 <div class="alert alert-danger alert-dismissible show fade">
                     <div class="alert-body">
@@ -88,6 +76,10 @@
             </div>
 
             <div class="form-group">
+                <input type="hidden" name="redirect_to" id="redirect_to" value="" />
+            </div>
+
+            <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-8">
                     <button type="submit" class="btn btn-primary" onclick="saveNewUser()">Add</button>
                 </div>
@@ -133,27 +125,13 @@
         </div>
     </div>
 </div>
-<?php if (isset($success_response)) : ?>
-    <script>
-        (function() {
-            let card_type = localStorage.getItem('card_type');
-            let orderId = localStorage.getItem('orderId');
-            let card = $('#card_type').val();
-
-            if ( card_type === 'LIMIT' || card == 'LIMIT') {
-                window.location.href = "<?= site_url('add_transaction') ?>";
-            } else {
-                window.location.href = "<?= site_url('normal_user') ?>";
-            }
-        })();
-    </script>
-<?php endif; ?>
 <script>
     $(document).ready(function() {
         let cardType = localStorage.getItem('card_type');
-
-        if (cardType === 'LIMIT' || cardType === 'CD') {
+        document.getElementById('normalUserForm').reset();
+        if (cardType === 'LIMIT') {
             $('#card_type').val(cardType);
+            $('#redirect_to').val(cardType);
         }
     });
 

@@ -2,6 +2,9 @@
 
 session_start();
 
+define('MESSAGE_TYPE', 'flash_message_type');
+define('MESSAGE', 'flash_message');
+
 function is_user_loggedin()
 {
     if (
@@ -44,4 +47,9 @@ function check_modules_access($module_id)
         return true;
     }
     return false;
+}
+
+function flash_message($type, $message) {
+    $_SESSION[MESSAGE_TYPE] = $type;
+    $_SESSION[MESSAGE] = $message;
 }

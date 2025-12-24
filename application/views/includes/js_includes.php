@@ -29,8 +29,20 @@
 <!-- Template JS File -->
 <script src="<?php echo site_url('resources/js/scripts.js'); ?>"></script>
 <script src="<?php echo site_url('resources/bundles/jquery.sparkline.min.js'); ?>"></script>
+<script src="<?php echo site_url('resources/bundles/izitoast/js/iziToast.min.js') ?>"></script>
+<script src="<?php echo site_url('resources/js/page/toastr.js'); ?>"></script>
 
 <script src="<?php echo site_url('resources/bundles/sweetalert/sweetalert.min.js'); ?>"></script>
 <script src="<?php echo site_url('resources/js/page/sweetalert.js'); ?>"></script>
 
 <script src="<?php echo site_url('resources/js/page/echarts.js'); ?>"></script>
+
+<?php if (isset($_SESSION[MESSAGE_TYPE])) { ?>
+<script>
+
+    toaster_message(
+        <?php echo json_encode($_SESSION[MESSAGE_TYPE]); ?>,
+        <?php echo json_encode($_SESSION[MESSAGE]); ?>
+    );
+</script>
+<?php unset($_SESSION[MESSAGE_TYPE], $_SESSION[MESSAGE]); } ?>
