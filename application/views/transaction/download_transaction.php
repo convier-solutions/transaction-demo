@@ -128,7 +128,8 @@
         let cardType = $('#card_type').val();
         let orderId = $('#order_id').val();
         let jsondata = JSON.parse(data);
-        let userInfo = jsondata[0].email;
+        console.log(jsondata,"JSON DATA");
+        let userInfo = jsondata[0]?.email;
 
 
         if (cardType.toUpperCase() === 'LIMIT') {
@@ -359,7 +360,9 @@
             },
             success: function(data) {
                 let dataObj = {};
-                dataObj = JSON.parse(data);                
+                dataObj = JSON.parse(data);    
+                console.log(dataObj,"DATA OBJ");
+                            
 
                 if (dataObj.status === 'error') {
                     swal("Error", dataObj.message, "error");
