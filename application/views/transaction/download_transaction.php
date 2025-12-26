@@ -128,18 +128,63 @@
         let cardType = $('#card_type').val();
         let orderId = $('#order_id').val();
         let jsondata = JSON.parse(data);
-        console.log(jsondata,"JSON DATA");
         let userInfo = jsondata[0]?.email;
 
-
+        /* =======================
+           LIMIT CARD FLOW
+        ======================= */
         if (cardType.toUpperCase() === 'LIMIT') {
-            localStorage.setItem('card_type', 'LIMIT');
-            localStorage.setItem('limitTransactionDone', 'true');
-            localStorage.setItem('orderId', orderId);
-            window.location.href = normalUser;
-            return; 
+
+            let limitTransactionDone = localStorage.getItem('limitTransactionDone');
+
+            // FIRST TIME LIMIT
+            if (limitTransactionDone !== 'true') {
+                localStorage.setItem('card_type', 'LIMIT');
+                localStorage.setItem('limitTransactionDone', 'true');
+                localStorage.setItem('orderId', orderId);
+
+                window.location.href = normalUser;
+                return;
+            }
+
+            // SECOND TIME LIMIT → SHOW SWAL
+            swal({
+                title: "Do you want to reuse the same email?",
+                icon: "success",
+                buttons: {
+                    cancel: {
+                        text: "No",
+                        visible: true,
+                        closeModal: true
+                    },
+                    confirm: {
+                        text: "Yes",
+                        closeModal: true
+                    }
+                }
+            }).then((willAdd) => {
+                if (willAdd) {
+                    
+                    localStorage.setItem('orderId', orderId);
+                    let limitUserInfo = localStorage.getItem('limitUserInfo');
+
+                    let UserInfo = localStorage.getItem('userInfo');
+
+                    userInfo = limitUserInfo ? limitUserInfo : UserInfo;
+                    localStorage.setItem('userInfo', userInfo);
+                    window.location.href = addTransactions;
+                } else {
+                    localStorage.setItem('card_type', 'LIMIT');
+                    window.location.href = normalUser;
+                }
+            });
+
+            return;
         }
 
+        /* =======================
+           CD CARD FLOW (unchanged)
+        ======================= */
         if (cardType.toUpperCase() == 'CD') {
 
            let cdTransactionDone = localStorage.getItem('cdTransactionDone');
@@ -171,11 +216,9 @@
                     localStorage.setItem('orderId', orderId);
                     let oldUserInfo = localStorage.getItem('oldUserInfo');
                     let UserInfo = localStorage.getItem('userInfo');
-                    if (oldUserInfo) {
-                        userInfo = oldUserInfo;
-                    } else {
-                        userInfo = UserInfo;
-                    }
+
+                    userInfo = oldUserInfo ? oldUserInfo : UserInfo;
+
                     localStorage.setItem('userInfo', userInfo);
                     window.location.href = addTransactions;
 

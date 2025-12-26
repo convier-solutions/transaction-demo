@@ -137,7 +137,12 @@
 
     function saveNewUser() {
         $newUser = $('#email').val();
+        $card_type = $('#card_type').val();
         let userInfo = localStorage.getItem('userInfo');
+        
+        if ($card_type === 'LIMIT') {
+            localStorage.setItem('limitUserInfo', $newUser);
+        }
 
         if (userInfo) {
             userInfo = $newUser;

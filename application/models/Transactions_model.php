@@ -59,8 +59,7 @@ class Transactions_model extends CI_Model
     public function get_file_download_data($card_type, $exclude_user_ids = [])
     {
 
-        $counter = strtoupper($card_type) == 'LIMIT' ? 1 : 3;
-        $date = (new DateTime("2024-01-28"))->format('Y-m-d H:i:s');
+        $date = (new DateTime("2025-12-25"))->format('Y-m-d H:i:s');
         if ($card_type != 'CD') {
             $query = " SELECT
                         u.id,u.email, u.password, u.cvv, u.card_type, u.created_datetime
@@ -71,9 +70,7 @@ class Transactions_model extends CI_Model
                     WHERE
                         u.card_type = '" . $card_type . "' AND u.created_datetime > '" . $date . "'
                 GROUP BY
-                        u.id
-                    HAVING
-                        COUNT(t.user) < '" . $counter . "'  order by rand() limit 1";
+                        u.id ";
         } else {
             // Skip Most Recent 1 Users
             $query = $this->cardTypeCDQuery($exclude_user_ids, $card_type, $date);
