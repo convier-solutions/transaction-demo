@@ -89,12 +89,12 @@
                     </tbody>
                 </table>
                 <div class="mb-3 d-flex justify-content-around">
-                    <a class="btn btn-primary" href="javascript:void(0)" onclick="goToAddTransactionPage('<?= site_url('add_transaction') ?>')">add transaction</a>
+                    <a class="btn btn-primary" href="javascript:void(0)" onclick="goToAddTransactionPage('<?= site_url('add_transaction') ?>')">Add transaction</a>
                     <a class="btn btn-secondary" style="display: none;" id="refreshUser" href="javascript:void(0)" onclick="refreshUserData()">Refresh User</a>
                 </div>
             </div>
         </div>
-    </div>
+    </div>0
 </div>
 </div>
 

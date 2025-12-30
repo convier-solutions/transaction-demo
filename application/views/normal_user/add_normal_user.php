@@ -99,7 +99,7 @@
 
                         <tr>
                             <th>Email</th>
-                            <th class="text-center">created date</th>
+                            <th class="text-center">Created date</th>
                             <th class="text-center">Action</th>
                         </tr>
 

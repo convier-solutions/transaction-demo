@@ -79,7 +79,7 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
                     <div class="card-header">
                         <h4>Transactions</h4>
                         <button style="all: unset; right:20px; position:absolute; text-decoration: underline;" type="button"
-                            onclick="exportToExcel()"> download excel</button>
+                            onclick="exportToExcel()"> Download excel</button>
 
                     </div>
                     <div class="card-body">
@@ -91,9 +91,9 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
                                         <th>Order id</th>
                                         <th>Purchase id</th>
                                         <th>Email</th>
-                                        <th>amount</th>
+                                        <th>Amount</th>
                                         <th>Payout</th>
-                                        <th>transaction date</th>
+                                        <th>Transaction date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

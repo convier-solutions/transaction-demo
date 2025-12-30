@@ -27,8 +27,8 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th class="text-center">created date</th>
-                                    <th class="text-center">created by</th>
+                                    <th class="text-center">Created date</th>
+                                    <th class="text-center">Created by</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -41,7 +41,7 @@
                                     <td><?= $user['email'] ;?></td>
                                     <td class="text-center"><?= $user['created_date']; ?></td>
                                     <td class="text-center"><?= $user['created_by']; ?></td>
-                                    <td class="text-center"><a href="<?= site_url('edit/'.$user['id'])?>" class="btn btn-primary">Udpate</a> &nbsp<a href="<?= site_url('delete/'.$user['id'])?>" class="btn btn-danger">Delete</a></td>
+                                    <td class="text-center"><a href="<?= site_url('edit/'.$user['id'])?>" class="btn btn-primary">Update</a> &nbsp<a href="<?= site_url('delete/'.$user['id'])?>" class="btn btn-danger">Delete</a></td>
                                 </tr>
                                 <?php
                                 }?>

@@ -80,9 +80,9 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
                                         <th>Order id</th>
                                         <th>Purchase id</th>
                                         <th>Email</th>
-                                        <th>amount</th>
+                                        <th>Amount</th>
                                         <th>Payout</th>
-                                        <th>transaction date</th>
+                                        <th>Transaction date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

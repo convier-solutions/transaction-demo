@@ -101,7 +101,7 @@
                                 }
                                 ?>
 
-                                <li><a class="nav-link" href="<?= site_url('add_transaction') ?>">add Transaction</a>
+                                <li><a class="nav-link" href="<?= site_url('add_transaction') ?>">Add Transaction</a>
                                 </li>
 
                                 <li><a class="nav-link" href="<?= site_url('download_transaction') ?>">Buy</a>

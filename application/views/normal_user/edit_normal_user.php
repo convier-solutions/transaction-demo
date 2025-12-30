@@ -92,7 +92,7 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-8">
-                    <button type="submit" class="btn btn-primary">update</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </div>
             <?php echo form_close(); ?>
