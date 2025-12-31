@@ -93,45 +93,63 @@ class Transactions_model extends CI_Model
             $excludedList = end($exclude_user_ids);
             $excludeQuery .= " AND u.id NOT IN ($excludedList)";
         }
-        $query = "WITH user_transactions as (
-            SELECT 
-                u.id,
-                u.email,
-                u.password,
-                u.cvv,
-                u.card_type,
-                u.created_datetime,
-                t.user,
-                t.created_date
-            
-            FROM users u 
-            LEFT JOIN transactions t 
-                ON t.user = u.id 
-            WHERE  
-                u.created_datetime > '" . $date . "' $excludeQuery
-                AND u.card_type = '$card_type'
-        ),
-
-        latest_user as (
-            SELECT DISTINCT
-                user 
-            FROM user_transactions 
-            ORDER BY created_date DESC 
-            LIMIT 1             
-        )
-
-        SELECT 
-            ut.* 
-        FROM 
-            user_transactions ut
-            
-        WHERE 
-            ut.id NOT IN (
-                select user from latest_user
-            )  
-
-        ORDER BY 
-            rand() LIMIT 1";
+        $query = "WITH ranked_transactions AS(
+                        SELECT
+                            u.id,
+                            u.email,
+                            u.password,
+                            u.cvv,
+                            u.card_type,
+                            u.created_datetime,
+                            t.user,
+                            t.created_date,
+                            ROW_NUMBER() OVER(
+                            PARTITION BY u.id
+                        ORDER BY
+                            t.created_date
+                        DESC
+                        ) AS rn
+                    FROM
+                        users u
+                    LEFT JOIN transactions t ON
+                        t.user = u.id
+                    WHERE
+                        u.created_datetime > '" . $date . "' AND u.card_type = '" . $card_type . "' " . $excludeQuery . "),
+                            latest_user AS(
+                            SELECT DISTINCT
+                                user
+                            FROM
+                                ranked_transactions
+                            WHERE
+                                USER IS NOT NULL
+                            ORDER BY
+                                created_date
+                            DESC
+                        LIMIT 1
+                        )
+                    SELECT
+                        *
+                    FROM
+                        ranked_transactions rt
+                    WHERE
+                        rt.rn = 1 AND(
+                            (
+                            SELECT
+                                COUNT(DISTINCT id)
+                            FROM
+                                ranked_transactions
+                        ) = 1 OR NOT EXISTS(
+                        SELECT
+                            1
+                        FROM
+                            latest_user lu
+                        WHERE
+                            lu.user = rt.id
+                    )
+                        )
+                    ORDER BY
+                        RAND()
+                    LIMIT 1;";
         return $query;
     }
     public function check_order_exists($order_id, $card_type)
