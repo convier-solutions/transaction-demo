@@ -103,9 +103,15 @@
 
                                 <li><a class="nav-link" href="<?= site_url('add_transaction') ?>">Add Transaction</a>
                                 </li>
-
+                                <?php
+                                if (check_modules_access($modules['buy']['module_id']) == true)
+                                {
+                                ?>
                                 <li><a class="nav-link" href="<?= site_url('download_transaction') ?>">Buy</a>
                                 </li>
+                                <?php
+                                }
+                                ?>
                             </ul>
                         </li>
 

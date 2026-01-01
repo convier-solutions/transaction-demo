@@ -22,16 +22,36 @@ class Transactions_model extends CI_Model
         }
     }
 
-    public function paginated_transactions($limit, $offset)
+    public function paginated_transactions()
     {
+        $search = $this->input->post('search')['value'] ?? '';
+        $start  = (int) $this->input->post('start');
+        $length = (int) $this->input->post('length');
+
         $this->db->select('t.id, t.order_id, t.purchase_id, t.amount, t.pay_out, u.email, t.transaction_date');
         $this->db->from('transactions t');
         $this->db->join('users u', 'u.id = t.user', 'left');
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('t.order_id', $search);
+            $this->db->or_like('t.purchase_id', $search);
+            $this->db->or_like('u.email', $search);
+            $this->db->group_end();
+        }
+
+        $filtered_count = $this->db->count_all_results('', false);
+
         $this->db->order_by('t.id', 'DESC');
-        $this->db->limit($limit, $offset);
+        $this->db->order_by($this->input->post('order')[0]['column'] ?? '0', $this->input->post('order')[0]['dir'] ?? 'desc');
+        $this->db->limit($length, $start);
 
         $query = $this->db->get();
-        return $query->result_array();
+
+        return [
+            'data' => $query->result_array(),
+            'filtered' => $filtered_count
+        ];
     }
 
     public function count_all_transactions()
@@ -93,63 +113,48 @@ class Transactions_model extends CI_Model
             $excludedList = end($exclude_user_ids);
             $excludeQuery .= " AND u.id NOT IN ($excludedList)";
         }
-        $query = "WITH ranked_transactions AS(
-                        SELECT
-                            u.id,
-                            u.email,
-                            u.password,
-                            u.cvv,
-                            u.card_type,
-                            u.created_datetime,
-                            t.user,
-                            t.created_date,
-                            ROW_NUMBER() OVER(
-                            PARTITION BY u.id
-                        ORDER BY
-                            t.created_date
-                        DESC
-                        ) AS rn
-                    FROM
-                        users u
-                    LEFT JOIN transactions t ON
-                        t.user = u.id
-                    WHERE
-                        u.created_datetime > '" . $date . "' AND u.card_type = '" . $card_type . "' " . $excludeQuery . "),
-                            latest_user AS(
-                            SELECT DISTINCT
-                                user
-                            FROM
-                                ranked_transactions
-                            WHERE
-                                USER IS NOT NULL
-                            ORDER BY
-                                created_date
-                            DESC
-                        LIMIT 1
-                        )
+        $query = "WITH ranked_transactions AS (
                     SELECT
-                        *
-                    FROM
-                        ranked_transactions rt
-                    WHERE
-                        rt.rn = 1 AND(
-                            (
-                            SELECT
-                                COUNT(DISTINCT id)
-                            FROM
-                                ranked_transactions
-                        ) = 1 OR NOT EXISTS(
-                        SELECT
-                            1
-                        FROM
-                            latest_user lu
-                        WHERE
-                            lu.user = rt.id
-                    )
+                        u.id,
+                        u.email,
+                        u.password,
+                        u.cvv,
+                        u.card_type,
+                        u.created_datetime,
+                        t.user,
+                        t.created_date,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY u.id
+                            ORDER BY t.created_date DESC
+                        ) AS rn
+                    FROM users u
+                    LEFT JOIN transactions t ON t.user = u.id
+                    WHERE u.created_datetime > '2025-12-25'
+                    AND u.card_type = 'CD'
+                    ORDER BY RAND()
+                    LIMIT 5
+                ),
+                latest_user AS (
+                    SELECT rt.user
+                    FROM ranked_transactions rt
+                    WHERE rt.user IS NOT NULL
+                    AND rt.rn = 1 
+                    ORDER BY rt.created_date DESC
+                    LIMIT 1
+                )
+                SELECT *
+                FROM ranked_transactions rt
+                WHERE rt.rn = 1
+                AND (
+                        (SELECT COUNT(DISTINCT id) FROM ranked_transactions) = 1
+                        OR NOT EXISTS (
+                            SELECT 1
+                            FROM latest_user lu
+                            WHERE lu.user = rt.id
                         )
-                    ORDER BY
-                        RAND()
-                    LIMIT 1;";
+                )
+                ORDER BY RAND()
+                LIMIT 1;";
         return $query;
     }
     public function check_order_exists($order_id, $card_type)
@@ -192,74 +197,6 @@ class Transactions_model extends CI_Model
     {
         $query = "UPDATE `transactions` SET `order_id`='" . $params['order_id'] . "',`purchase_id`='" . $params['purchase_id'] . "',`transaction_date`='" . $params['transaction_date'] . "',`user`='" . $params['user'] . "',`amount`='" . $params['amount'] . "',`pay_out`='" . $params['pay_out'] . "',`created_by`='" . $params['created_by'] . "' WHERE id = {$id}";
         return $this->db->query($query);
-    }
-    public function paginate_transactions($total_records)
-    {
-        $limit = 100;
-        $page = max(1, (int) $this->input->get('page'));
-        $offset = ($page - 1) * $limit;
-
-        $data['transactions'] = $this->transactions_model->paginated_transactions($limit, $offset);
-        $data['pagination'] = $this->build_pagination($page, $total_records, $limit);
-
-        return $data;
-    }
-
-    public function build_pagination($page, $total_records, $limit)
-    {
-        $total_pages = (int) ceil($total_records / $limit);
-
-        // No pagination needed
-        if ($total_pages <= 1) {
-            return '';
-        }
-
-        $max_links = 5;
-        $half_links = floor($max_links / 2);
-
-        // Calculate range
-        $start = max(1, min($page - $half_links, $total_pages - $max_links + 1));
-        $end = min($total_pages, $start + $max_links - 1);
-
-        $base_url = site_url('');
-        $links = ['<div class="pagination">'];
-
-        // Previous link
-        if ($page > 1) {
-            $links[] = sprintf('<a href="%s?page=%d" rel="prev">&laquo;</a>', $base_url, $page - 1);
-        }
-
-        // First page + ellipsis
-        if ($start > 1) {
-            $links[] = sprintf('<a href="%s?page=1">1</a>', $base_url);
-            if ($start > 2) {
-                $links[] = '<span>...</span>';
-            }
-        }
-
-        // Page numbers
-        for ($i = $start; $i <= $end; $i++) {
-            $links[] = ($i == $page)
-                ? "<strong>$i</strong>"
-                : sprintf('<a href="%s?page=%d">%d</a>', $base_url, $i, $i);
-        }
-
-        // Last page + ellipsis
-        if ($end < $total_pages) {
-            if ($end < $total_pages - 1) {
-                $links[] = '<span>...</span>';
-            }
-            $links[] = sprintf('<a href="%s?page=%d">%d</a>', $base_url, $total_pages, $total_pages);
-        }
-
-        // Next link
-        if ($page < $total_pages) {
-            $links[] = sprintf('<a href="%s?page=%d" rel="next">&raquo;</a>', $base_url, $page + 1);
-        }
-
-        $links[] = '</div>';
-
-        return implode('', $links);
     }
 
     function get_order_exists($order_id)

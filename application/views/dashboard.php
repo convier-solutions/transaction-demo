@@ -73,7 +73,7 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="save-stage" style="width:100%;">
+                            <table class="table table-striped table-hover" id="all-transaction" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -86,28 +86,8 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php foreach ($transactions as $key => $c) { ?>
-                                        <tr>
-                                            <td><?php echo $c['id']; ?></td>
-                                            <td><?php echo $c['order_id']; ?></td>
-                                            <td><?php echo $c['purchase_id']; ?></td>
-                                            <td><?php echo $c['email']; ?></td>
-                                            <td><?php echo $c['amount']; ?></td>
-                                            <td><?php echo $c['pay_out']; ?></td>
-                                            <td><?php echo $c['transaction_date']; ?></td>
-                                            <td>
-                                                <a href="<?= site_url('delete_transaction/' . $c['id']) ?>" class="btn btn-danger">Delete</a>
-                                                <a href="<?= site_url('update_transaction/' . $c['id']) ?>" class="btn btn-primary">Update</a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
+                                <tbody></tbody>
                             </table>
-                            <!-- Pagination links -->
-                            <div>
-                                <?= $pagination; ?>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,13 +98,51 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
 <?php
 } ?>
 <script>
-$(document).ready(function() {
-    // Destroy DataTable if it was initialized
-    if ($.fn.DataTable.isDataTable('#save-stage')) {
-        $('#save-stage').DataTable().destroy();
-    }
-    
-    // Or simply don't initialize it at all
-    // Just remove any DataTable initialization code
-});
+    $(document).ready(function() {
+
+        $('#all-transaction').DataTable({
+            serverSide: true,
+            processing: true,
+            ajax: {
+                url: '<?= site_url('all_transaction') ?>',
+                type: 'POST'
+            },
+            columns: [{
+                    data: 'id'
+                },
+                {
+                    data: 'order_id'
+                },
+                {
+                    data: 'purchase_id'
+                },
+                {
+                    data: 'email'
+                },
+                {
+                    data: 'amount'
+                },
+                {
+                    data: 'pay_out'
+                },
+                {
+                    data: 'transaction_date'
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return `
+                            <a href="<?= site_url('delete_transaction/') ?>${data.id}" class="btn btn-danger">Delete</a>
+                            <a href="<?= site_url('update_transaction/') ?>${data.id}" class="btn btn-primary">Update</a>
+                        `;
+                    }
+                }
+            ],
+            order: [
+                [0, 'desc']
+            ]
+
+
+        });
+    });
 </script>

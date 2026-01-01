@@ -516,5 +516,6 @@ $config['modules'] = [
     'ticket_master' => ['module_id' => 1, 'module_name' => 'Add Ticket Master Credential'],
     'all_transaction' => ['module_id' => 2, 'module_name' => ' Show All Transaction'],
     'users' => ['module_id' => 3, 'module_name' => 'Portal User Management'],
-    'charts' => ['module_id' => 4, 'module_name' => 'Profit Charts']
+    'charts' => ['module_id' => 4, 'module_name' => 'Profit Charts'],
+    'buy' => ['module_id' => 5, 'module_name' => 'Buy Module']
 ];

@@ -16,9 +16,18 @@ class Transactions extends MY_Controller
     public function index()
     {
         $total_records = $this->transactions_model->count_all_transactions();
-        $data = $this->transactions_model->paginate_transactions($total_records);
-        // print_r($data['transactions']);
-        $data['total_records'] = $total_records;
+        $result = $this->transactions_model->paginated_transactions();
+
+        if ($this->input->is_ajax_request()) {
+            echo json_encode([
+                'draw' => (int) $this->input->post('draw'),
+                'recordsTotal' => $total_records,
+                'recordsFiltered' => $result['filtered'],
+                'data' => $result['data']
+            ]);
+            exit;
+        }
+        $data['transactions'] = $result['data'];
         $data['_view'] = 'transaction/index';
         $this->load->view('layouts/main', $data);
     }
