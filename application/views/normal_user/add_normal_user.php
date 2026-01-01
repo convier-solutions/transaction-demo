@@ -98,6 +98,7 @@
                     <thead>
 
                         <tr>
+                            <th>ID</th>
                             <th>Email</th>
                             <th class="text-center">Created date</th>
                             <th class="text-center">Action</th>
@@ -109,6 +110,7 @@
                         foreach ($normal_users as $key => $user) {
                         ?>
                             <tr>
+                                <td><?= $user['id'] ?></td>
                                 <td><?= $user['email'] ?></td>
                                 <td class="text-center"><?= $user['created_datetime'] ?></td>
                                 <td class="text-center"> <a href="<?= site_url('delete_normal_user/' . $user['id']) ?>"
