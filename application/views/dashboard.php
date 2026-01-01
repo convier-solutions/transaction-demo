@@ -104,7 +104,7 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
             serverSide: true,
             processing: true,
             ajax: {
-                url: '<?= site_url('all_transaction') ?>',
+                url: '<?= site_url('') ?>',
                 type: 'POST'
             },
             columns: [{
