@@ -80,7 +80,7 @@ class User_model extends CI_Model
         if (!empty($search)) {
             $this->db->group_start();
             $this->db->like('email', $search);
-            $this->db->like('id', $search);
+            $this->db->or_like('id', $search);
             $this->db->group_end();
         }
 
