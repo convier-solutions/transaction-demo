@@ -205,36 +205,52 @@ if (check_modules_access($modules['all_transaction']['module_id']) == true) {
     }
 
     function exportToExcel() {
-        var data = <?php echo json_encode($transactions) ?>;
-        if (data && data.length) {
-            var workbook = XLSX.utils.book_new();
-            var worksheet = XLSX.utils.json_to_sheet(data);
+        $.ajax({
+            url: '<?= site_url('download_transaction_csv') ?>',
+            type: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'error') {
+                    console.error('Error fetching data:', response.message);
+                    return;
+                    
+                }
+                data = response.data;
 
-            // replace underscores with spaces in column names
-            var headers = {};
-            for (var h in worksheet) {
-                var header = h.replace(/_/g, ' ');
-                headers[header] = worksheet[h];
+                if (data && data.length) {
+                    var workbook = XLSX.utils.book_new();
+                    var worksheet = XLSX.utils.json_to_sheet(data);
+
+                    // replace underscores with spaces in column names
+                    var headers = {};
+                    for (var h in worksheet) {
+                        var header = h.replace(/_/g, ' ');
+                        headers[header] = worksheet[h];
+                    }
+                    worksheet = headers;
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Transactions');
+                    var wbout = XLSX.write(workbook, {
+                        bookType: 'xlsx',
+                        type: 'binary'
+                    });
+
+                    function s2ab(s) {
+                        var buf = new ArrayBuffer(s.length);
+                        var view = new Uint8Array(buf);
+                        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                        return buf;
+                    }
+                    saveAs(new Blob([s2ab(wbout)], {
+                        type: 'application/octet-stream'
+                    }), 'Transactions.xlsx');
+                } else {
+                    console.log('No data to export.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
             }
-            worksheet = headers;
-
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Transactions');
-            var wbout = XLSX.write(workbook, {
-                bookType: 'xlsx',
-                type: 'binary'
-            });
-
-            function s2ab(s) {
-                var buf = new ArrayBuffer(s.length);
-                var view = new Uint8Array(buf);
-                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-                return buf;
-            }
-            saveAs(new Blob([s2ab(wbout)], {
-                type: 'application/octet-stream'
-            }), 'Transactions.xlsx');
-        } else {
-            console.log('No data to export.');
-        }
+        });
     }
 </script>

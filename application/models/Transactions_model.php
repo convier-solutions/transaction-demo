@@ -25,8 +25,8 @@ class Transactions_model extends CI_Model
     public function paginated_transactions()
     {
         $search = $this->input->post('search')['value'] ?? '';
-        $start  = (int) $this->input->post('start');
-        $length = (int) $this->input->post('length');
+        $start  = $this->input->post('start') ? (int) $this->input->post('start') : 0;
+        $length = $this->input->post('length') ? (int) $this->input->post('length') : 10;
 
         $this->db->select('t.id, t.order_id, t.purchase_id, t.amount, t.pay_out, u.email, t.transaction_date');
         $this->db->from('transactions t');
@@ -210,6 +210,20 @@ class Transactions_model extends CI_Model
             return $query->row();
         } else {
             return false;
+        }
+    }
+
+    function get_all_transactions_for_csv()
+    {
+        $this->db->select('t.id, t.order_id, t.purchase_id, t.amount, t.pay_out, u.email, t.transaction_date');
+        $this->db->from('transactions t');
+        $this->db->join('users u', 'u.id = t.user', 'left');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return array();
         }
     }
 }

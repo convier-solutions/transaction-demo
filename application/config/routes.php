@@ -22,6 +22,7 @@ $route['all_transaction'] = 'transactions/index';
 $route['add_ticket_master'] = 'transactions/add_ticket_master';
 $route['delete_transaction/(:num)'] = 'transactions/delete_transaction/$1';
 $route['update_transaction/(:num)'] = 'transactions/update_transaction/$1';
+$route['download_transaction_csv'] = 'transactions/download_transaction_csv';
 
 
 /**

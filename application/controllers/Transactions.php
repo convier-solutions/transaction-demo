@@ -185,4 +185,26 @@ class Transactions extends MY_Controller
         redirect('');
         return true;
     }
+
+    function download_transaction_csv()
+    {
+
+        $transactions = $this->transactions_model->get_all_transactions_for_csv();
+
+        if(is_array($transactions) && !empty($transactions)) {
+             echo json_encode(array(
+                'status' => 'success',
+                'message' => 'Transactions fetched successfully',
+                'data' => $transactions,
+            ));
+            exit;
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No transactions available',
+                'data' => []
+            ]);
+            exit;
+        }
+    }
 }
