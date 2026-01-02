@@ -101,8 +101,11 @@
                                 }
                                 ?>
 
-                                <li><a class="nav-link" href="<?= site_url('add_transaction') ?>">Add Transaction</a>
-                                </li>
+                                <?php if ( (check_modules_access($modules['all_transaction']['module_id']) == true) || (check_modules_access($modules['ticket_master']['module_id']) == true)  ) { ?>
+                                    <li><a class="nav-link" href="<?= site_url('add_transaction') ?>">Add Transaction</a>
+                                    </li>
+                                <?php } ?>
+
                                 <?php
                                 if (check_modules_access($modules['buy']['module_id']) == true)
                                 {

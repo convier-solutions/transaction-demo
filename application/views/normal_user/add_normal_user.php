@@ -130,16 +130,17 @@
                 { data: 'id' },
                 { data: 'email' },
                 { data: 'created_datetime' },
-                    {
-                        data: null,
-                        render: function(data, type, row) {
-                            return `
-                                    <a href="<?= site_url('delete_normal_user/') ?>${data.id}" class="btn btn-danger">Delete</a>
-                                    <a href="<?= site_url('edit_normal_user/') ?>${data.id}" class="btn btn-primary">Update</a>
-                                `;
-                        }
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return `
+                                <a href="<?= site_url('delete_normal_user/') ?>${data.id}" class="btn btn-danger">Delete</a>
+                                <a href="<?= site_url('edit_normal_user/') ?>${data.id}" class="btn btn-primary">Update</a>
+                            `;
                     }
-            ]
+                }
+            ],
+            order: [[0, 'desc']]
         });
 
     });

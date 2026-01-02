@@ -85,6 +85,7 @@ class User_model extends CI_Model
         }
 
         $filtered_count = $this->db->count_all_results('', false);
+        $this->db->order_by('id', 'desc');
         $this->db->order_by($this->input->post('order')[0]['column'] ?? '0', $this->input->post('order')[0]['dir'] ?? 'desc');
         $this->db->limit($length, $start);
 
