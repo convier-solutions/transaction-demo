@@ -140,7 +140,6 @@
             // FIRST TIME LIMIT
             if (limitTransactionDone !== 'true') {
                 localStorage.setItem('card_type', 'LIMIT');
-                localStorage.setItem('limitTransactionDone', 'true');
                 localStorage.setItem('orderId', orderId);
 
                 window.location.href = normalUser;
@@ -191,7 +190,6 @@
 
            if (cdTransactionDone !== 'true') {
                 localStorage.setItem('card_type', 'CD');
-                localStorage.setItem('cdTransactionDone', 'true');
                timerDataShow();
                 return;
             }

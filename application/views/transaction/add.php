@@ -160,7 +160,14 @@
                 localStorage.removeItem('orderId');
                 localStorage.setItem('transactionAdded', 'true');
                 localStorage.setItem('isCdTransaction', 'false');
-                localStorage.removeItem('card_type');
+                $card_type = localStorage.getItem('card_type');
+
+                if ($card_type === 'CD') {
+                    localStorage.setItem('cdTransactionDone', 'true');
+                }
+                if ($card_type === 'LIMIT') {
+                    localStorage.setItem('limitTransactionDone', 'true');
+                }
                 window.location.href = downloadTransactions;
 
             },
