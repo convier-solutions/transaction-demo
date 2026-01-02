@@ -32,6 +32,7 @@ $route['download_transaction_csv'] = 'transactions/download_transaction_csv';
 $route['normal_user'] = 'user/add_normal_user';
 $route['edit_normal_user/(:num)'] = 'user/edit_normal_user/$1';
 $route['delete_normal_user/(:num)'] = 'user/delete_normal_user/$1';
+$route['normal_user_ajax'] = 'user/normal_user_ajax';
 
 /**
  * Users

@@ -123,7 +123,7 @@
             serverSide: true,
             processing: true,
             ajax: {
-                url: '<?= site_url('normal_user') ?>',
+                url: '<?= site_url('normal_user_ajax') ?>',
                 type: 'POST'
             },
             columns: [
