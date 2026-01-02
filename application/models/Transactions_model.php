@@ -113,47 +113,75 @@ class Transactions_model extends CI_Model
             $excludedList = end($exclude_user_ids);
             $excludeQuery .= " AND u.id NOT IN ($excludedList)";
         }
-        $query = "WITH ranked_transactions AS (
+        $query = "WITH sampled_users AS(
+                SELECT
+                    u.id,
+                    u.email,
+                    u.password,
+                    u.cvv,
+                    u.card_type,
+                    u.created_datetime
+                FROM
+                    users u
+                WHERE
+                    u.created_datetime > '2025-12-25' AND u.card_type = 'CD'
+                ORDER BY
+                    RAND()
+                LIMIT 5),
+                    ranked_transactions AS(
                     SELECT
-                        u.id,
-                        u.email,
-                        u.password,
-                        u.cvv,
-                        u.card_type,
-                        u.created_datetime,
+                        su.id,
+                        su.email,
+                        su.password,
+                        su.cvv,
+                        su.card_type,
+                        su.created_datetime,
                         t.user,
                         t.created_date,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY u.id
-                            ORDER BY t.created_date DESC
-                        ) AS rn
-                    FROM users u
-                    LEFT JOIN transactions t ON t.user = u.id
-                    WHERE u.created_datetime > '2025-12-25'
-                    AND u.card_type = 'CD'
-                    ORDER BY RAND()
-                    LIMIT 5
-                ),
-                latest_user AS (
-                    SELECT rt.user
-                    FROM ranked_transactions rt
-                    WHERE rt.user IS NOT NULL
-                    AND rt.rn = 1 
-                    ORDER BY rt.created_date DESC
+                        ROW_NUMBER() OVER(
+                        PARTITION BY su.id
+                    ORDER BY
+                        t.created_date
+                    DESC
+                    ) AS rn
+                FROM
+                    sampled_users su
+                LEFT JOIN transactions t ON
+                    t.user = su.id),
+                        latest_user AS(
+                        SELECT
+                            rt.user
+                        FROM
+                            ranked_transactions rt
+                        WHERE
+                            rt.user IS NOT NULL AND rt.rn = 1
+                        ORDER BY
+                            rt.created_date
+                        DESC
                     LIMIT 1
+                    )
+                SELECT
+                    *
+                FROM
+                    ranked_transactions rt
+                WHERE
+                    rt.rn = 1 AND(
+                        (
+                        SELECT
+                            COUNT(DISTINCT id)
+                        FROM
+                            ranked_transactions
+                    ) = 1 OR NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        latest_user lu
+                    WHERE
+                        lu.user = rt.user -- :white_check_mark: FIXED (was rt.id)
                 )
-                SELECT *
-                FROM ranked_transactions rt
-                WHERE rt.rn = 1
-                AND (
-                        (SELECT COUNT(DISTINCT id) FROM ranked_transactions) = 1
-                        OR NOT EXISTS (
-                            SELECT 1
-                            FROM latest_user lu
-                            WHERE lu.user = rt.id
-                        )
-                )
-                ORDER BY RAND()
+                    )
+                ORDER BY
+                    RAND()
                 LIMIT 1;";
         return $query;
     }
