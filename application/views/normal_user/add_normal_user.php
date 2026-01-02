@@ -94,34 +94,17 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover" id="save-stage" style="width:100%;">
+                <table class="table table-striped table-hover" id="normal-user" style="width:100%;">
                     <thead>
 
                         <tr>
                             <th>ID</th>
                             <th>Email</th>
-                            <th class="text-center">Created date</th>
-                            <th class="text-center">Action</th>
+                            <th>Created date</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
-                    <tbody>
-                        <?php
-                        foreach ($normal_users as $key => $user) {
-                        ?>
-                            <tr>
-                                <td><?= $user['id'] ?></td>
-                                <td><?= $user['email'] ?></td>
-                                <td class="text-center"><?= $user['created_datetime'] ?></td>
-                                <td class="text-center"> <a href="<?= site_url('delete_normal_user/' . $user['id']) ?>"
-                                        class="btn btn-danger">Delete</a> <a
-                                        href="<?= site_url('edit_normal_user/' . $user['id']) ?>"
-                                        class="btn btn-primary">Update</a></td>
-                            </tr>
-                        <?php
-                        }
-                        ?>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -135,6 +118,30 @@
             $('#card_type').val(cardType);
             $('#redirect_to').val(cardType);
         }
+
+        $('#normal-user').DataTable({
+            serverSide: true,
+            processing: true,
+            ajax: {
+                url: '<?= site_url('normal_user') ?>',
+                type: 'POST'
+            },
+            columns: [
+                { data: 'id' },
+                { data: 'email' },
+                { data: 'created_datetime' },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                    <a href="<?= site_url('delete_normal_user/') ?>${data.id}" class="btn btn-danger">Delete</a>
+                                    <a href="<?= site_url('edit_normal_user/') ?>${data.id}" class="btn btn-primary">Update</a>
+                                `;
+                        }
+                    }
+            ]
+        });
+
     });
 
     function saveNewUser() {

@@ -138,7 +138,18 @@ class User extends MY_Controller
             }
         }
 
-        $data['normal_users'] = $this->user_model->all_normal_users();
+        $result = $this->user_model->all_normal_users();
+        $total_records = $this->user_model->count_all_normal_users();
+        if ($this->input->is_ajax_request()) {
+             echo json_encode([
+                'draw' => (int) $this->input->post('draw'),
+                'recordsTotal' => $total_records,
+                'recordsFiltered' => $result['filtered'],
+                'data' => $result['data']
+            ]);
+
+            exit;
+        }
         $data['_view'] = 'normal_user/add_normal_user';
         $this->load->view('layouts/main', $data);
     }

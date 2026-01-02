@@ -70,14 +70,29 @@ class User_model extends CI_Model
 
     public function all_normal_users()
     {
-        $query = "SELECT * FROM `users`";
-        $result = $this->db->query($query);
+        $search = $this->input->post('search')['value'] ?? '';
+        $start  = $this->input->post('start') ? (int) $this->input->post('start') : 0;
+        $length = $this->input->post('length') ? (int) $this->input->post('length') : 10;
 
-        if ($result->num_rows() > 0) {
-            return $result->result_array();
-        } else {
-            return array();
+        $this->db->select('*');
+        $this->db->from('users');
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('email', $search);
+            $this->db->like('id', $search);
+            $this->db->group_end();
         }
+
+        $filtered_count = $this->db->count_all_results('', false);
+        $this->db->order_by($this->input->post('order')[0]['column'] ?? '0', $this->input->post('order')[0]['dir'] ?? 'desc');
+        $this->db->limit($length, $start);
+
+        $result = $this->db->get();
+        return [
+            'data' => $result->result_array(),
+            'filtered' => $filtered_count
+        ];
     }
 
     public function delete_normal_user($id)
@@ -113,5 +128,11 @@ class User_model extends CI_Model
             WHERE
                 id = '" . $params['id'] . "' ;";
         return $this->db->query($query);
+    }
+
+    function count_all_normal_users() {
+
+        return $this->db->count_all('users');
+        
     }
 }
